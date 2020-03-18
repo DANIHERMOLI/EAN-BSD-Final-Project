@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+
+<DialogPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.todolist.DialogController">
+    <content>
+        <GridPane hgap="10.0" vgap="10.0">
+            <children>
+                <Label text="Tittle" />
+                <Label text="Details" GridPane.rowIndex="1" />
+                <Label text="Due Date" GridPane.rowIndex="2" />
+                <TextField fx:id="shortDescriptionField" GridPane.columnIndex="1" />
+                <TextArea fx:id="fullDescriptionField" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                wrapText="true"/>
+                <DatePicker fx:id="deadLineField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            </children>
+        </GridPane>
+    </content>
+</DialogPane>
