@@ -10,37 +10,55 @@
 <?import javafx.scene.layout.BorderPane?>
 
 
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Tooltip?>
 <BorderPane fx:id="mainWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.todolist.Controller">
     <left>
         <ListView fx:id="listView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" onKeyPressed="#handleKeyPressed"/>
     </left>
     <center>
-        <TextArea fx:id="contentView" prefHeight="200.0" prefWidth="200.0" wrapText="true" BorderPane.alignment="CENTER" />
+        <TextArea fx:id="contentView" prefHeight="200.0" prefWidth="200.0" wrapText="true" BorderPane.alignment="CENTER" editable="false"/>
     </center>
     <bottom>
         <TextField fx:id="dueDateView" alignment="CENTER" BorderPane.alignment="CENTER" />
     </bottom>
     <top>
-        <MenuBar BorderPane.alignment="CENTER">
-            <menus>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#showNewItemDialog" text="New" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Quit" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
+        <VBox>
+            <MenuBar BorderPane.alignment="CENTER">
+                <menus>
+                    <Menu mnemonicParsing="false" text="File">
+                        <items>
+                            <MenuItem mnemonicParsing="false" onAction="#showNewItemDialog" text="New" />
+                            <SeparatorMenuItem mnemonicParsing="false" />
+                            <MenuItem mnemonicParsing="false" text="Quit" onAction="#handleExit"/>
+                        </items>
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="Edit">
+                        <items>
+                            <MenuItem mnemonicParsing="false" text="Modify"  onAction="#modifyItem"/>
+                        </items>
+                    </Menu>
+                </menus>
+            </MenuBar>
+            <ToolBar>
+            <HBox>
+                <Button onAction="#showNewItemDialog">
+                    <tooltip>
+                        <Tooltip text="Add New Item"/>
+                    </tooltip>
+                    <graphic>
+                        <ImageView>
+                            <Image url="@icons8-add-32.png" backgroundLoading="true"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+        </ToolBar>
+        </VBox>
     </top>
 </BorderPane>

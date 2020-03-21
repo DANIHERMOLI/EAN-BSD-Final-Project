@@ -40,6 +40,10 @@ public class AppData {
         this.toDoItems = toDoItems;
     }
 
+    public void modifyData() throws IOException{
+
+    }
+
     public void loadData() throws IOException {
         toDoItems = FXCollections.observableArrayList();
         Path path = Paths.get(filename);

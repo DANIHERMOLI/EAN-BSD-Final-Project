@@ -6,6 +6,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class DialogController {
     @FXML
@@ -23,5 +24,11 @@ public class DialogController {
         ToDoItem newItem = new ToDoItem(shortDescription, fullDescription, deadLiveValue);
         AppData.getInstance().addData(newItem);
         return newItem;
+    }
+
+    public void showModifyData(ToDoItem item) {
+        fullDescriptionField.setText(item.getFullDescription());
+        shortDescriptionField.setText(item.getShortDescription());
+        deadLineField.setValue(item.getDeadLine());
     }
 }

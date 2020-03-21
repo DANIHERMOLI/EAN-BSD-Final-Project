@@ -1,7 +1,9 @@
 package com.todolist;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Optional;
 
 public class Controller {
@@ -56,7 +59,13 @@ public class Controller {
             }
         });
 
-        listView.setItems(AppData.getInstance().getToDoItems());
+        SortedList<ToDoItem> sortedList = new SortedList<ToDoItem>(AppData.getInstance().getToDoItems(), new Comparator<ToDoItem>() {
+            @Override
+            public int compare(ToDoItem o1, ToDoItem o2) {
+                return o1.getDeadLine().compareTo(o2.getDeadLine());
+            }
+        });
+        listView.setItems(sortedList);
         listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         listView.getSelectionModel().selectFirst();
 
@@ -71,11 +80,12 @@ public class Controller {
                             setText(null);
                         } else {
                             setText(toDoItem.getShortDescription());
-                            if(toDoItem.getDeadLine().isBefore(LocalDate.now())) {
+                            if(toDoItem.getDeadLine().isBefore(LocalDate.now()) ||
+                                    toDoItem.getDeadLine().isEqual(LocalDate.now())) {
                                 setTextFill(Color.CRIMSON);
                             } else if(toDoItem.getDeadLine().isBefore(LocalDate.now().plusDays(3))) {
                                 setTextFill(Color.ORANGE);
-                            } else if(toDoItem.getDeadLine().isAfter(LocalDate.now().plusDays(4))) {
+                            } else if(toDoItem.getDeadLine().isBefore(LocalDate.now().plusDays(7))) {
                                 setTextFill(Color.GREEN);
                             } else {
                                 setTextFill(Color.BLACK);
@@ -128,12 +138,6 @@ public class Controller {
             }
         }
     }
-    @FXML
-    public void handleClickListView() {
-        ToDoItem item = listView.getSelectionModel().getSelectedItem();
-        contentView.setText(item.getFullDescription());
-        dueDateView.setText("Due: " + item.getDeadLine().toString());
-    }
 
     public void deleteItem(ToDoItem item) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -144,5 +148,44 @@ public class Controller {
         if(result.isPresent() && (result.get() == ButtonType.OK)) {
             AppData.getInstance().deleteData(item);
         }
+    }
+
+    @FXML
+    public void modifyItem() {
+        ToDoItem selectedItem = listView.getSelectionModel().getSelectedItem();
+        showNewItemDialog(selectedItem);
+    }
+
+    public void showNewItemDialog(ToDoItem item) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(mainWindow.getScene().getWindow());
+        dialog.setTitle("Modify Item");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("todoListDialog.fxml"));
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+        } catch (IOException e) {
+            System.out.println("ERROR: Unable to load dialog box");
+            e.printStackTrace();
+            return;
+        }
+        DialogController controller = fxmlLoader.getController();
+        controller.showModifyData(item);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+
+            AppData.getInstance().deleteData(item);
+            ToDoItem newItem = controller.processData();
+            listView.getSelectionModel().select(newItem);
+        }
+    }
+
+    @FXML
+    public void handleExit() {
+        Platform.exit();
     }
 }
